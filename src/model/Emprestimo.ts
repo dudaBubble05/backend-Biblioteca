@@ -21,6 +21,8 @@ export class Emprestimo {
      */
     
     constructor(
+        idLivro: number,
+        idAluno: number,
         dataEmprestimo: Date,
         dataDevolucao: Date,
         statusEmprestimo: string,
@@ -29,6 +31,8 @@ export class Emprestimo {
         this.dataEmprestimo = dataEmprestimo;
         this.dataDevolucao = dataDevolucao;
         this.statusEmprestimo = statusEmprestimo;
+        this.idAluno = idAluno;
+        this.idLivro = idLivro;
     }
 
     /* Métodos get e set */
