@@ -6,8 +6,8 @@ const database = new DatabaseModel().pool;
 /**
  * Classe que representa o Livro.
  */
-export class Livro {    /* Atributos */
-/* Identificador do Livro */
+export class Livro {
+    
 private idLivro: number = 0;
 /* Título do Livro */
 private titulo: string;
@@ -348,4 +348,5 @@ try {
     // retorno um valor falso
     return false;
 }
-}}
+}
+}
