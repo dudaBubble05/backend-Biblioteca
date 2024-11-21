@@ -4,7 +4,7 @@ import { Aluno } from "../model/Aluno";
 interface AlunoDTO {
     nome: string,
     sobrenome: string,
-    dataNascimento: Date,
+    data_nascimento: Date,
     endereco: string,
     email:string,
     celular:string
@@ -46,7 +46,7 @@ export class AlunoController extends Aluno {
             // instanciando um objeto do tipo Aluno com as informações recebidas
             const novoAluno = new Aluno(AlunoRecebido.nome, 
                                         AlunoRecebido.sobrenome, 
-                                        AlunoRecebido.dataNascimento,
+                                        AlunoRecebido.data_nascimento,
                                         AlunoRecebido.endereco,
                                         AlunoRecebido.email,
                                         AlunoRecebido.celular);

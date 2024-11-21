@@ -198,7 +198,7 @@ export class Aluno {
                     linha.celular,
                     linha.endereco,
                     linha.email,
-                    linha.dataNascimento,);
+                    linha.data_nascimento,);
 
                 novoaluno.setIdAluno(linha.id_aluno);
 
@@ -228,36 +228,36 @@ export class Aluno {
      * @throws {Error} - Se ocorrer algum erro durante a execução do cadastro, uma mensagem de erro é exibida
      *                   no console junto com os detalhes do erro.
      */
- static async cadastroAluno(aluno: Aluno): Promise<boolean> {
-    try {
-        // query para fazer insert de um carro no banco de dados
-        const queryInsertaluno = `INSERT INTO carro (nome, cpf, celular)
-                                    VALUES
-                                    ('${aluno.getNome()}', 
-                                    ${aluno.getNome()}, 
-                                    ${aluno.getCelular()}, 
-                                    RETURNING id_aluno;`;
-
-        // executa a query no banco e armazena a resposta
-        const respostaBD = await database.query(queryInsertaluno);
-
-        // verifica se a quantidade de linhas modificadas é diferente de 0
-        if (respostaBD.rowCount != 0) {
-            console.log(`aluno cadastrado com sucesso! ID do aluno: ${respostaBD.rows[0].id_aluno}`);
-            // true significa que o cadastro foi feito
-            return true;
-        }
-        // false significa que o cadastro NÃO foi feito.
-        return false;
-
-        // tratando o erro
-    } catch (error) {
-        // imprime outra mensagem junto com o erro
-        console.log('Erro ao cadastrar o aluno. Verifique os logs para mais detalhes.');
-        // imprime o erro no console
-        console.log(error);
-        // retorno um valor falso
-        return false;
-    }
-}
+    static async cadastroAluno(aluno: Aluno): Promise<boolean> {
+        try {
+            // query para fazer insert de um carro no banco de dados
+            const queryInsertaluno = `INSERT INTO carro (nome, cpf, celular)
+                                        VALUES
+                                        ('${aluno.getNome()}', 
+                                        ${aluno.getNome()}, 
+                                        ${aluno.getCelular()}, 
+                                        RETURNING id_aluno;`;
+    
+            // executa a query no banco e armazena a resposta
+            const respostaBD = await database.query(queryInsertaluno);
+    
+            // verifica se a quantidade de linhas modificadas é diferente de 0
+            if (respostaBD.rowCount != 0) {
+                console.log(`aluno cadastrado com sucesso! ID do aluno: ${respostaBD.rows[0].id_aluno}`);
+                // true significa que o cadastro foi feito
+                return true;
+            }
+            // false significa que o cadastro NÃO foi feito.
+            return false;
+    
+            // tratando o erro
+        } catch (error) {
+            // imprime outra mensagem junto com o erro
+            console.log('Erro ao cadastrar o aluno. Verifique os logs para mais detalhes.');
+            // imprime o erro no console
+            console.log(error);
+            // retorno um valor falso
+            return false;
+       }
+   }
 }
