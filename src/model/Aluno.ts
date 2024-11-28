@@ -11,6 +11,9 @@ export class Aluno {
     /* Atributos */
     /* Identificador do Aluno */
     private idAluno: number = 0;
+
+    private ra: string = "";
+
     /* Nome do Aluno */
     private nome: string;
     /* Sobrenome do Aluno */
@@ -66,6 +69,26 @@ export class Aluno {
     public setIdAluno(idAluno: number): void {
         this.idAluno = idAluno;
     }
+
+     /* Métodos get e set */
+    /**
+     * Recupera o identificador do Aluno
+     * @returns o identificador do Aluno
+     */
+    public getRa(): string {
+        return this.ra;
+    }
+
+    /**
+     * Atribui um valor ao identificador do Aluno
+     * @param idAluno novo identificado do Aluno
+     */
+    public setRa(ra: string): void {
+        this.ra = ra;
+    }
+
+
+
 
     /**
      * Retorna a marca do Aluno.
@@ -195,12 +218,13 @@ export class Aluno {
                 const novoaluno = new Aluno(
                     linha.nome,
                     linha.cpf,
-                    linha.celular,
+                    linha.data_nascimento,
                     linha.endereco,
-                    linha.email,
-                    linha.data_nascimento,);
+                    linha.email,                    
+                    linha.celular);
 
                 novoaluno.setIdAluno(linha.id_aluno);
+                novoaluno.setRa(linha.ra);
 
                 listaDealunos.push(novoaluno);
             });
@@ -231,11 +255,15 @@ export class Aluno {
     static async cadastroAluno(aluno: Aluno): Promise<boolean> {
         try {
             // query para fazer insert de um carro no banco de dados
-            const queryInsertaluno = `INSERT INTO carro (nome, cpf, celular)
+            const queryInsertaluno = `INSERT INTO aluno (nome, sobrenome, data_nascimento, endereco, email, celular)
                                         VALUES
                                         ('${aluno.getNome()}', 
-                                        ${aluno.getNome()}, 
-                                        ${aluno.getCelular()}, 
+                                        '${aluno.getSobrenome()}',
+                                        '${aluno.getDataNascimento()}',
+                                        '${aluno.getEndereco()}',
+                                        '${aluno.getEmail()}',
+                                        '${aluno.getCelular()}'
+                                        )
                                         RETURNING id_aluno;`;
     
             // executa a query no banco e armazena a resposta

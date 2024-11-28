@@ -5,12 +5,12 @@ interface LivroDTO {
     titulo: string,
     autor: string,
     editora: string,
-    ano_publicacao: string,
+    anoPublicacao: string,
     isbn: string,
-    quant_total: number,
-    quant_disponivel: number,
-    valor_aquisicao: number,
-    status_livro_emprestado: string
+    quantTotal: number,
+    quantDisponivel: number,
+    valorAquisicao: number,
+    statusLivroEmprestado: string
 }
 
 /**
@@ -68,12 +68,12 @@ export class LivroController extends Livro {
             const novoLivro = new Livro(livroRecebido. titulo, 
                                         livroRecebido.autor, 
                                         livroRecebido.editora, 
-                                        livroRecebido.ano_publicacao,
+                                        livroRecebido.anoPublicacao,
                                         livroRecebido.isbn,
-                                        livroRecebido.quant_total,
-                                        livroRecebido.quant_disponivel,
-                                        livroRecebido.valor_aquisicao,
-                                        livroRecebido.status_livro_emprestado);
+                                        livroRecebido.quantTotal,
+                                        livroRecebido.quantDisponivel,
+                                        livroRecebido.valorAquisicao,
+                                        livroRecebido.statusLivroEmprestado);
 
             // Chama a função de cadastro passando o objeto como parâmetro
             const repostaClasse = await Livro.cadastroLivro(novoLivro);
