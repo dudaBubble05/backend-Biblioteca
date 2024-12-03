@@ -286,6 +286,66 @@ export class Aluno {
             console.log(error);
             // retorno um valor falso
             return false;
-       }
-   }
+        }
+    }
+     /**
+     * Remove um aluno do banco de dados com base no ID fornecido.
+     *
+     * @param idAluno - O ID do aluno a ser removido.
+     * @returns Uma Promise que resolve para `true` se o aluno foi removido com sucesso, ou `false` caso contrário.
+     *
+     * @throws Lança um erro se ocorrer um problema durante a execução da consulta.
+     */
+    static async removerAluno(idAluno: number): Promise<boolean> {
+        try {
+            const queryDeleteAluno = `DELETE FROM aluno WHERE id_aluno = ${idAluno}`;
+
+            const respostaBD = await database.query(queryDeleteAluno);
+
+            if(respostaBD.rowCount != 0) {
+               console.log(`Aluno removido com sucesso. ID removido: ${idAluno}`);
+               return true;
+            }
+
+           return false;
+        }  catch (error) {
+            console.log('Erro ao remover o aluno. Consulte os logs para mais detalhes.');
+            console.log(error);
+            return false;
+        }
+    }
+
+    /**
+     * Atualiza as informações de um aluno no banco de dados.
+     *
+     * @param aluno - O objeto aluno contendo as informações atualizadas.
+     * @returns Uma Promise que resolve para `true` se o aluno foi atualizado com sucesso, ou `false` caso contrário.
+     *
+     * @throws Lança um erro se ocorrer um problema durante a atualização do aluno.
+     */
+    static async atualizarAluno(aluno: Aluno): Promise<boolean> {
+        try {
+            const queryUpdateAluno = `UPDATE aluno SET 
+                                            nome = '${aluno.getNome()}', 
+                                            sobrenome = '${aluno.getSobrenome()}',
+                                            data_nascimento = '${aluno.getDataNascimento()}',
+                                            endereco = '${aluno.getEndereco()}',
+                                            email = '${aluno.getEmail()}'
+                                            celular = '${aluno.getCelular()}',           
+                                            WHERE id_aluno = ${aluno.getIdAluno()};`;
+
+            const respostaBD = await database.query(queryUpdateAluno);
+
+            if(respostaBD.rowCount != 0) {
+                console.log(`Aluno atualizado com sucesso. ID: ${aluno.getIdAluno()}`);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.log('Erro ao remover o aluno. Consulte os logs para mais detalhes.');
+            console.log(error);
+            return false;
+        }
+    }
 }

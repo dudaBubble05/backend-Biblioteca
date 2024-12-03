@@ -95,4 +95,92 @@ export class LivroController extends Livro {
             return res.status(400).json({ mensagem: "Não foi possível cadastrar o livro. Entre em contato com o administrador do sistema." });
         }
     }
+
+    /** 
+     * Remove um Livro do sistema.
+     *
+     * @param {Request} req - O objeto de solicitação HTTP.
+     * @param {Response} res - O objeto de resposta HTTP.
+     * @returns {Promise<Response>} - A resposta HTTP com o status da operação.
+     *
+     * @throws {Error} - Lança um erro se ocorrer algum problema durante a remoção do livro.
+     */
+    static async remover(req: Request, res: Response): Promise<Response> {
+        try {
+            // recuperar o ID do livro a ser removido
+            const idLivro = parseInt(req.params.idLivro as string);
+
+            // chamar a função do modelo e armazenar a resposta
+            const repostaModelo = await Livro.removerLivro(idLivro);
+
+            // verifica se a reposta do modelo foi verdadeiro (true)
+            if(repostaModelo) {
+                // retorma um status 200 com uma mensagem de sucesso
+                return res.status(200).json({ mensagem: "O livro foi removido com sucesso!"});
+            } else {
+                // retorna um status 400 com uma mensagem de erro
+                return res.status(400).json({ mensagem: "Erro ao remover o livro. Entre em contato com o administrador do sistema." });
+            }
+
+        // trata qualquer erro que aconteça durante o processo
+        } catch (error) {
+            // lança uma mensagem de erro no console
+            console.log(`Erro ao remover um livro. ${error}`);
+
+            // retorna uma mensagem de erro há quem chamou a mensagem
+            return res.status(400).json({ mensagem: "Não foi possível remover o livro. Entre em contato com o administrador do sistema." });
+        }
+    }
+
+    /**
+     * Atualiza as informações de um livro existente.
+     * 
+     * @param req - O objeto de solicitação HTTP, contendo o corpo da requisição com os dados do livro a serem atualizados e o ID do livro nos parâmetros da URL.
+     * @param res - O objeto de resposta HTTP.
+     * @returns Uma promessa que resolve para um objeto de resposta HTTP com uma mensagem de sucesso ou erro.
+     * 
+     * @throws Retorna um status 400 com uma mensagem de erro se ocorrer uma exceção durante o processo de atualização.
+     */
+    static async atualizar(req: Request, res: Response): Promise<Response> {
+        try {
+            // recupera as informações a serem atualizadas no corpo da requisição
+            const livroRecebido: LivroDTO = req.body;
+            // recupera o ID do livro a ser atualizado
+            const idLivroRecebido = parseInt(req.params.idLivro as string);
+
+            // instanciando um objeto do tipo livro
+            const livroAtualizado = new Livro(
+                livroRecebido. titulo, 
+                livroRecebido.autor, 
+                livroRecebido.editora, 
+                livroRecebido.anoPublicacao,
+                livroRecebido.isbn,
+                livroRecebido.quantTotal,
+                livroRecebido.quantDisponivel,
+                livroRecebido.valorAquisicao,
+                livroRecebido.statusLivroEmprestado
+            );
+
+            // adicionando o ID do livro no objeto livroAtualizado
+            livroAtualizado.setIdLivro(idLivroRecebido);
+
+            // chamando a função de atualizar o livro e guardando a resposta (booleano)
+            const respostaModelo = await Livro.atualizarLivro(livroAtualizado);
+
+            // verifica se a respota do modelo é true
+            if(respostaModelo) {
+                // retorna um status 200 com uma mensagem de sucesso
+                return res.status(200).json({ mensagem: "Livro atualizado com sucesso!"});
+            } else {
+                // retorna um status 400 com uma mensagem de erro
+                return res.status(400).json({ mensagem: "Não foi possível atualizar o livro. Entre em contato com o administrador do sistema." });
+            }
+        } catch (error) {
+            // lança uma mensagem de erro no console
+            console.log(`Erro ao atualizar um livro. ${error}`);
+
+            // retorna uma mensagem de erro há quem chamou a mensagem
+            return res.status(400).json({ mensagem: "Não foi possível atualizar o livro. Entre em contato com o administrador do sistema." });
+        }
+    }
 }

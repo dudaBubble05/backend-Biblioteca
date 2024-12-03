@@ -7,7 +7,6 @@ const database = new DatabaseModel().pool;
  * Classe que gerencia os empréstimos de livros.
  */
 export class Emprestimo {
-
     /* Atributos */
     /* Identificador do empréstimo */
     private idEmprestimo: number = 0;
@@ -164,7 +163,7 @@ export class Emprestimo {
                 linha.id_aluno,
                 linha.id_emprestimo,
                 linha.data_emprestimo,
-                linha.data_devolucao,);
+                linha.data_devolucao);
 
                 novoPedidoEmprestimo.setIdEmprestimo(linha.id_emprestimo);
 
@@ -179,53 +178,106 @@ export class Emprestimo {
     } 
 
     /**
-    * Realiza o cadastro de pedido no banco de dados.
-    * 
-    * Esta função recebe um objeto do tipo Pedido e insere seus dados (idlivro,idaluno,dataPedido,valorPedido)
-    * na tabela emprestimos do banco de dados. O método retorna um valor booleano indicando se o cadastro 
-    * foi realizado com sucesso.
-    * 
-    * @param {emprestimo} pedido_venda - Objeto contendo os dados do pedido que será cadastrado. O objeto emprestimo
-    *                        deve conter os métodos getIdlivro(), getIdaluno(), `getDatapedido(),getValorPedido` 
-    *                        que retornam os respectivos valores do aluno.
-    * @returns {Promise<boolean>} - Retorna true se o pedido foi cadastrado com sucesso e false caso contrário.
-    *                               Em caso de erro durante o processo, a função trata o erro e retorna false.
-    * 
-    * @throws {Error} - Se ocorrer algum erro durante a execução do cadastro, uma mensagem de erro é exibida
-    *                   no console junto com os detalhes do erro.
-    */
+     * Cadastra um novo emprestimo de livro no banco de dados.
+     * 
+     * Esta função executa uma consulta SQL `INSERT` para registrar um novo emprestimo de livro com os dados fornecidos
+     * como parâmetros. Caso o cadastro seja bem-sucedido, a função retorna `true` e exibe uma mensagem de confirmação 
+     * com o ID do emprestimo. Se o cadastro falhar, retorna `false` e registra o erro no console.
+     * 
+     * @param {number} idAluno - O ID do aluno associado ao emprstimo.
+     * @param {number} idLivro - O ID do livro associado ao emprestimo.
+     * @param {Date} dataEmprestimo - A data em que o emprestimo foi feito.
+     * @param {Date} dataDevolucao - A data em que o emprestimo foi devolvido.
+     * 
+     * @returns {Promise<boolean>} - Retorna `true` se o emprestimo for cadastrado com sucesso; caso contrário, retorna `false`.
+     * 
+     * @throws {Error} - Caso ocorra um erro durante a execução da consulta SQL, o erro é registrado no console.
+     */
 
-    static async cadastroemprestimo(emprestimo: Emprestimo): Promise<boolean> {
+    static async cadastroEmprestimo(idAluno: number, idLivro: number, dataEmprestimo: Date, dataDevolucao: Date): Promise<boolean> {
         try {
-            // query para fazer insert de um livro no banco de dados
-            const queryInsertemprestimo = `INSERT INTO livro (nome, cpf, telefone)
-                                        VALUES
-                                        (${emprestimo.getIdAluno()}, 
-                                        ${emprestimo.getIdLivro()},
-                                        ${emprestimo.getDataEmprestimo()}, 
-                                        RETURNING id_aluno;`;
-        
-            // executa a query no banco e armazena a resposta
-            const respostaBD = await database.query(queryInsertemprestimo);
-        
-            // verifica se a quantidade de linhas modificadas é diferente de 0
-            if (respostaBD.rowCount != 0) {
-                console.log(`Pedido cadastrado com sucesso! ID do pedido: ${respostaBD.rows[0].id_pedido}`);
-                // true significa que o cadastro foi feito
+            const queryInsertEmprestimo = `INSERT INTO emprestimo (id_aluno, id_livro, data_emprestimo, data_devolucao)
+                                        VALUES (${idAluno}, 
+                                                ${idLivro}, 
+                                               '${dataEmprestimo}', 
+                                               '${dataDevolucao}
+                                        RETURNING id_emprestimo;`;
+
+            const respostaBD = await database.query(queryInsertEmprestimo);
+            if(respostaBD.rowCount != 0) {
+                console.log(`Emprestimo de livro cadastrado com sucesso. ID emprestimo: ${respostaBD.rows[0].id_emprestimo}`);
                 return true;
             }
-            // false significa que o cadastro NÃO foi feito.
+
             return false;
-        
-            // tratando o erro
-        }
-        catch (error) {
-            // imprime outra mensagem junto com o erro
-            console.log('Erro ao cadastrar o aluno. Verifique os logs para mais detalhes.');
-            // imprime o erro no console
+        } catch (error) {
+            console.log('Erro ao cadastrar o emprestimo. Consulte os logs para mais detalhes.');
             console.log(error);
-            // retorno um valor falso
             return false;
         }
     }
+
+    /**
+     * Remove um emprestimo de livro do banco de dados com base no ID fornecido.
+     *
+     * @param idEmprestimo - O ID do emprestimo de livro a ser removido.
+     * @returns Uma promessa que resolve para `true` se o emprestimo foi removido com sucesso, ou `false` caso contrário.
+     *
+     * @throws Lança um erro se ocorrer um problema durante a execução da consulta no banco de dados.
+     */
+    static async removerEmprestimo(idEmprestimo: number): Promise<boolean> {
+        try {
+            const queryDeleteEmprestimo = `DELETE FROM emprestimo WHERE id_emprestimo = ${idEmprestimo};`;
+
+            const respostaBD = await database.query(queryDeleteEmprestimo);
+
+            if(respostaBD.rowCount != 0) {
+                console.log(`Emprestimo de livro removido com sucesso! ID: ${idEmprestimo}.`);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.log('Erro ao remover o emprestimo. Consulte os logs para mais detalhes.');
+            console.log(error);
+            return false;
+        }
+    }
+
+
+    /**
+     * Atualiza um emprestimo de livro no banco de dados.
+     * 
+     * @param idEmprestimo - O ID do emprestimo de livro a ser atualizado.
+     * @param idAluno - O ID do aluno associado ao emprestimo.
+     * @param idLivro - O ID do livro associado ao emprestimo.
+     * @param dataEmprestimo - A data de emprestimo.
+     * @param dataDevolucao - A devolução do livro.
+     * @returns Uma Promise que resolve para `true` se o emprestimo foi atualizado com sucesso, ou `false` caso contrário.
+     * @throws Lança um erro se ocorrer um problema durante a atualização do emprestimo.
+     */
+    static async atualizarEmprestimo(idEmprestimo: number, idAluno: number, idLivro: number, dataEmprestimo: Date, dataDevolucao: Date): Promise<boolean> {
+        try {
+            const queryUpdateEmprestimo = `UPDATE emprestimo SET
+                                            id_aluno = ${idAluno},
+                                            id_livro = ${idLivro},
+                                            data_emprestimo = '${dataEmprestimo}',
+                                            data_devolucao = ${dataDevolucao}
+                                            WHERE id_emprestimo = ${idEmprestimo};`;
+
+            const respostaBD = await database.query(queryUpdateEmprestimo);
+
+            if(respostaBD.rowCount != 0) {
+                console.log(`Emprestimo atualizado com sucesso: ID: ${idEmprestimo}`);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.log('Erro ao atualizar o emprestimo. Consulte os logs para mais detalhes.');
+            console.log(error);
+            return false;
+        }
+    }
+    
 }

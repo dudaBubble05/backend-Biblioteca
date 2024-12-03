@@ -349,4 +349,89 @@ try {
     return false;
 }
 }
+
+
+    /**
+     * Remove um livro do banco de dados com base no ID fornecido.
+     *
+     * @param {number} idLivro - O ID do livro a ser removido.
+     * @returns {Promise<boolean>} - Retorna uma promessa que resolve para true se o livro foi removido com sucesso, ou false caso contrário.
+     *
+     * @throws {Error} - Lança um erro se ocorrer um problema durante a remoção do livro.
+     */
+    static async removerLivro(idLivro: number): Promise<boolean> {
+        try {
+            // cria uma query para deletar um objeto do banco de dados, passando como parâmetro o id do livro recebido na função
+            const queryDeleteLivro = `DELETE FROM livro WHERE id_livro = ${idLivro}`;
+        
+            // executar a query e armazenar a resposta do banco de dados
+            const respostaBD = await database.query(queryDeleteLivro);
+
+            // verifica se o número de linhas alteradas é diferente de 0
+            if(respostaBD.rowCount != 0) {
+                // exibe uma mensagem no console
+                console.log(`Livro removido com sucesso. ID removido: ${idLivro}`);
+                // retorna true, indicando que o livro foi removido
+                return true;
+            }
+
+            // retorna false, o que indica que a remoção não foi feita 
+            return false;
+
+        // trata qualquer erro que possa acontecer no caminho
+        } catch (error) {
+            // exibe uma mensagem de falha
+            console.log(`Erro ao remover livro. Verifique os logs para mais detalhes.`);
+            // imprime o erro no console da API
+            console.log(error);
+            // retorna false, o que indica que a remoção não foi feita
+            return false;
+        }
+    }
+
+    
+    /**
+     * Atualiza as informações de um livro no banco de dados.
+     * @param {Livro} livro - O objeto livro contendo as informações atualizadas.
+     * @returns {Promise<boolean>} - Retorna uma Promise que resolve para true se a atualização foi bem-sucedida, ou false caso contrário.
+     * @throws {Error} - Lança um erro se ocorrer algum problema durante a execução da query.
+     */
+    static async atualizarLivro(livro: Livro): Promise<boolean> {
+        try {
+            // cria a query de update a ser executada no banco de dados
+            const queryUpdateLivro = `UPDATE livro SET
+                                        titulo = '${livro.getTitulo()}'
+                                        autor = '${livro.getAutor()}'
+                                        editora = '${livro.getEditora()}'
+                                        ano_publicacao = ${livro.getAnoPublicacao()} 
+                                        isbn = ${livro.getIsbn()}
+                                        quant_total = ${livro.getQuantTotal()}
+                                        quant_disponivel = ${livro.getQuantDisponivel()}
+                                        valor_aquisicao = ${livro.getValorAquisicao()}
+                                        status_livro_emprestado = '${livro.getStatusLivroEmprestado()}'
+                                        WHERE id_livro = ${livro.getIdLivro()};`;
+
+            // executar a query e armazenar a resposta do banco de dados em uma variável
+            const respostaBD = await database.query(queryUpdateLivro);
+
+            // verifica se alguma linha foi alterada
+            if(respostaBD.rowCount != 0) { 
+                // imprime uma mensagem de sucesso no console
+                console.log(`Livro atualizado com sucesso! ID: ${livro.getIdLivro()}`);
+                // retorna ture, indicando que a query foi executada com sucesso
+                return true;
+            }
+
+            // retorna falso, indicando que a query não foi executada com sucesso
+            return false;
+            
+        } catch (error) {
+            // exibe uma mensagem de falha
+            console.log(`Erro ao atualizar o livro. Verifique os logs para mais detalhes.`);
+            // imprime o erro no console da API
+            console.log(error);
+            // retorna false, o que indica que a remoção não foi feita
+            return false;
+        }
+    }
 }

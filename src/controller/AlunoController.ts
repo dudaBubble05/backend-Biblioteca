@@ -73,6 +73,73 @@ export class AlunoController extends Aluno {
 
             // retorna uma mensagem de erro há quem chamou a mensagem
             return res.status(400).json({ mensagem: "Não foi possível cadastrar o Aluno. Entre em contato com o administrador do sistema." });
-}
-}
+        }
+    }
+
+    /**
+     * Remove um aluno com base no ID fornecido na solicitação.
+     * 
+     * @param req - O objeto de solicitação do Express, contendo os parâmetros da solicitação.
+     * @param res - O objeto de resposta do Express, usado para enviar a resposta ao aluno.
+     * @returns Uma promessa que resolve com um objeto de resposta do Express.
+     * 
+     * @throws Retorna uma resposta de erro com status 400 se ocorrer um erro durante a remoção do aluno.
+     */
+    static async remover(req: Request, res: Response): Promise<Response> {
+        try {
+            const idAluno = parseInt(req.params.idAluno as string);
+
+            const respostaModelo = await Aluno.removerAluno(idAluno);
+
+            if(respostaModelo) {
+                return res.status(200).json({ mensagem: "Aluno removido com sucesso!"});
+            } else {
+                return res.status(400).json({ mensagem: "Não foi possível remover o Aluno. Entre em contato com o administrador do sistema."});
+            }
+
+        } catch (error) {
+            console.log(`Erro ao remover o aluno. ${error}`);
+
+            return res.status(400).json({ mensagem: "Não foi possível remover o aluno. Entre em contato com o administrador do sistema." });
+        }
+    }
+
+    /**
+     * Atualiza as informações de um aluno existente.
+     *
+     * @param req - Objeto de solicitação HTTP, contendo os dados do aluno no corpo da solicitação e o ID do aluno nos parâmetros.
+     * @param res - Objeto de resposta HTTP.
+     * @returns Uma promessa que resolve com uma resposta HTTP indicando o sucesso ou falha da operação.
+     *
+     * @throws Retorna uma resposta HTTP com status 400 e uma mensagem de erro se ocorrer um problema durante a atualização do aluno.
+     */
+    static async atualizar(req: Request, res: Response): Promise<Response> {
+        try {
+            const AlunoRecebido: AlunoDTO = req.body;
+
+            const idAlunoRecebido = parseInt(req.params.idAluno);
+
+            const alunoAtualizado = new Aluno(
+                AlunoRecebido.nome, 
+                AlunoRecebido.sobrenome, 
+                AlunoRecebido.dataNascimento,
+                AlunoRecebido.endereco,
+                AlunoRecebido.email,
+                AlunoRecebido.celular);
+            
+            alunoAtualizado.setIdAluno(idAlunoRecebido);
+
+            const respostaModelo = await Aluno.atualizarAluno(alunoAtualizado);
+
+            if(respostaModelo) {
+                return res.status(200).json({ mensagem: "Aluno atualizado com sucesso!" });
+            } else {
+                return res.status(400).json({ mensagem: "Não foi possível remover o aluno. Entre em contato com o administrador do sistema." });
+            }
+        } catch (error) {
+            console.log(`Erro ao remover o aluno. ${error}`);
+
+            return res.status(400).json({ mensagem: "Não foi possível remover o aluno. Entre em contato com o administrador do sistema." });
+        }
+    }
 }
