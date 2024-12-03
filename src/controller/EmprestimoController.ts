@@ -82,7 +82,7 @@ export class EmprestimoController extends Emprestimo {
      *
      * @throws Retorna uma resposta com status 400 e uma mensagem de erro se ocorrer algum problema durante a remoção do emprestimo.
      */
-    static async remover(req: Request, res: Response): Promise<Response> {
+    static async remover(req: Request, res: Response): Promise<any> {
         try {
             const idEmprestimo = parseInt(req.params.idEmprestimo as string);
 
@@ -108,7 +108,7 @@ export class EmprestimoController extends Emprestimo {
      *
      * @throws Retorna uma resposta HTTP com status 400 e uma mensagem de erro se ocorrer um problema durante a atualização do emprestimo.
      */
-    static async atualizar(req: Request, res: Response): Promise<Response> {
+    static async atualizar(req: Request, res: Response): Promise<any> {
         try {
             const emprestimoRecebido: EmprestimoDTO = req.body;
             const idEmprestimoRecebido = parseInt(req.params.idEmprestimo as string);

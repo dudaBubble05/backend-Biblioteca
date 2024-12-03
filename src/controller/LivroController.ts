@@ -105,7 +105,7 @@ export class LivroController extends Livro {
      *
      * @throws {Error} - Lança um erro se ocorrer algum problema durante a remoção do livro.
      */
-    static async remover(req: Request, res: Response): Promise<Response> {
+    static async remover(req: Request, res: Response): Promise<any> {
         try {
             // recuperar o ID do livro a ser removido
             const idLivro = parseInt(req.params.idLivro as string);
@@ -141,7 +141,7 @@ export class LivroController extends Livro {
      * 
      * @throws Retorna um status 400 com uma mensagem de erro se ocorrer uma exceção durante o processo de atualização.
      */
-    static async atualizar(req: Request, res: Response): Promise<Response> {
+    static async atualizar(req: Request, res: Response): Promise<any> {
         try {
             // recupera as informações a serem atualizadas no corpo da requisição
             const livroRecebido: LivroDTO = req.body;

@@ -85,7 +85,7 @@ export class AlunoController extends Aluno {
      * 
      * @throws Retorna uma resposta de erro com status 400 se ocorrer um erro durante a remoção do aluno.
      */
-    static async remover(req: Request, res: Response): Promise<Response> {
+    static async remover(req: Request, res: Response): Promise<any> {
         try {
             const idAluno = parseInt(req.params.idAluno as string);
 
@@ -113,7 +113,7 @@ export class AlunoController extends Aluno {
      *
      * @throws Retorna uma resposta HTTP com status 400 e uma mensagem de erro se ocorrer um problema durante a atualização do aluno.
      */
-    static async atualizar(req: Request, res: Response): Promise<Response> {
+    static async atualizar(req: Request, res: Response): Promise<any> {
         try {
             const AlunoRecebido: AlunoDTO = req.body;
 
